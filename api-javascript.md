@@ -12,7 +12,7 @@ import axios from 'axios';
  * @param {string} model - The AI model to use (optional)
  * @returns {Promise} - Promise resolving to the extracted ticket information
  */
-async function extractTicketInfo(file, model = 'deepseek/deepseek-chat-v3-0324:free') {
+async function extractTicketInfo(file, model = 'deepseek/DeepSeek-V3-0324') {
   // Create form data
   const formData = new FormData();
   formData.append('file', file);
@@ -147,7 +147,7 @@ function TicketUploader() {
     <div class="form-group">
       <label for="model">Select AI Model:</label>
       <select id="model" v-model="selectedModel">
-        <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek Chat</option>
+        <option value="deepseek/DeepSeek-V3-0324">DeepSeek Chat</option>
         <option value="anthropic/claude-3-haiku:beta">Claude 3 Haiku</option>
         <option value="anthropic/claude-3-sonnet:beta">Claude 3 Sonnet</option>
         <option value="meta-llama/llama-3-8b-instruct:free">Llama 3 8B</option>
@@ -174,7 +174,7 @@ function TicketUploader() {
     createApp({
       setup() {
         const selectedFile = ref(null);
-        const selectedModel = ref('deepseek/deepseek-chat-v3-0324:free');
+        const selectedModel = ref('deepseek/DeepSeek-V3-0324');
         const result = ref(null);
         const loading = ref(false);
         const error = ref(null);

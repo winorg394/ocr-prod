@@ -4,6 +4,14 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 from werkzeug.utils import secure_filename
 from ocr import process_file  # Fixed import statement - removed process_base64
 import traceback
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
+
+# Ensure required environment variables are set
+if not os.getenv('OPENAI_API_KEY'):
+    raise ValueError("OPENAI_API_KEY environment variable is not set")
 
 app = Flask(__name__)
 app.config['UPLOAD_FOLDER'] = 'uploads'
@@ -51,7 +59,7 @@ def extract_info():
         return jsonify({'error': 'File type not supported'}), 400
     
     # Get model from request or use default
-    model = request.form.get('model', 'deepseek/deepseek-chat-v3-0324:free')
+    model = request.form.get('model', 'deepseek/DeepSeek-V3-0324')
     
     # Save file to uploads folder
     filename = secure_filename(file.filename)
@@ -91,5 +99,5 @@ def extract_info():
         pass  # Added this line to fix the indentation error after finally
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 5001))
     app.run(debug=True,host='0.0.0.0', port=port)

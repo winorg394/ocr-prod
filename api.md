@@ -26,7 +26,7 @@ Extracts structured information from a flight ticket image or PDF.
 | Parameter | Type   | Required | Description                                                                                |
 |-----------|--------|----------|--------------------------------------------------------------------------------------------|
 | file      | File   | Yes      | The flight ticket image or PDF file (supported formats: .jpg, .jpeg, .png, .pdf)           |
-| model     | String | No       | AI model to use for processing (default: "deepseek/deepseek-chat-v3-0324:free")            |
+| model     | String | No       | AI model to use for processing (default: "deepseek/DeepSeek-V3-0324")            |
 
 **Example Request**:
 
@@ -34,7 +34,7 @@ Using cURL:
 ```bash
 curl -X POST http://localhost:8808/api/extract \
   -F "file=@path/to/ticket.jpg" \
-  -F "model=deepseek/deepseek-chat-v3-0324:free"
+  -F "model=deepseek/DeepSeek-V3-0324"
 ```
 
 Using Python requests:
@@ -43,7 +43,7 @@ import requests
 
 url = "http://localhost:8808/api/extract"
 files = {"file": open("path/to/ticket.jpg", "rb")}
-data = {"model": "deepseek/deepseek-chat-v3-0324:free"}
+data = {"model": "deepseek/DeepSeek-V3-0324"}
 
 response = requests.post(url, files=files, data=data)
 print(response.json())
@@ -100,7 +100,7 @@ print(response.json())
 
 The API supports various AI models through OpenRouter:
 
-- `deepseek/deepseek-chat-v3-0324:free` (default)
+- `deepseek/DeepSeek-V3-0324` (default)
 - `anthropic/claude-3-haiku:beta`
 - `anthropic/claude-3-sonnet:beta`
 - `meta-llama/llama-3-8b-instruct:free`

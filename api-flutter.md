@@ -45,7 +45,7 @@ class FlightTicketOcrService {
   /// [model] - Optional AI model to use for processing
   Future<Map<String, dynamic>> extractTicketInfo(
     File file, {
-    String model = 'deepseek/deepseek-chat-v3-0324:free',
+    String model = 'deepseek/DeepSeek-V3-0324',
   }) async {
     try {
       // Determine file mime type

@@ -11,5 +11,5 @@ services:
       - FLASK_ENV=production
       - FLASK_APP=api.py
       - PORT=5000
-      - OPENAI_API_KEY=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
-      - OPENAI_BASE_URL=https://openrouter.ai/api/v1
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - OPENAI_BASE_URL=${OPENAI_BASE_URL}

@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flight Ticket OCR System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .upload-section {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        .upload-section.highlight {
+            border-color: #007bff;
+            background-color: #f8f9fa;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        select, button {
+            padding: 8px 12px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0069d9;
+        }
+        #result {
+            border: 1px solid #ccc;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            min-height: 200px;
+            white-space: pre-wrap;
+        }
+        .loading {
+            text-align: center;
+            display: none;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #007bff;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <h1>Flight Ticket OCR System</h1>
+    
+    <div class="container">
+        <div class="upload-section" id="drop-area">
+            <p>Upload a flight ticket image or PDF</p>
+            <p>Drag and drop files here or click to select</p>
+            <form id="upload-form" enctype="multipart/form-data">
+                <input type="file" id="file-input" name="file" accept=".jpg,.jpeg,.png,.pdf" style="display: none;">
+                <button type="button" id="select-file">Select File</button>
+                <p id="file-name"></p>
+            </form>
+        </div>
+        
+        <div class="form-group">
+            <label for="model-select">Select AI Model:</label>
+            <select id="model-select">
+                <option value="deepseek/deepseek-chat-v3-0324:free">DeepSeek Chat</option>
+                <option value="anthropic/claude-3-haiku:beta">Claude 3 Haiku</option>
+                <option value="anthropic/claude-3-sonnet:beta">Claude 3 Sonnet</option>
+                <option value="meta-llama/llama-3-8b-instruct:free">Llama 3 8B</option>
+            </select>
+        </div>
+        
+        <button id="process-btn">Process Ticket</button>
+        
+        <div class="loading" id="loading">
+            <div class="spinner"></div>
+            <p>Processing... This may take a few moments.</p>
+        </div>
+        
+        <div>
+            <h2>Results:</h2>
+            <pre id="result">Results will appear here...</pre>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropArea = document.getElementById('drop-area');
+            const fileInput = document.getElementById('file-input');
+            const selectFileBtn = document.getElementById('select-file');
+            const fileName = document.getElementById('file-name');
+            const processBtn = document.getElementById('process-btn');
+            const modelSelect = document.getElementById('model-select');
+            const resultArea = document.getElementById('result');
+            const loading = document.getElementById('loading');
+            
+            // Handle file selection button
+            selectFileBtn.addEventListener('click', function() {
+                fileInput.click();
+            });
+            
+            // Handle file selection
+            fileInput.addEventListener('change', function() {
+                if (fileInput.files.length > 0) {
+                    fileName.textContent = `Selected file: ${fileInput.files[0].name}`;
+                }
+            });
+            
+            // Handle drag and drop events
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            function highlight() {
+                dropArea.classList.add('highlight');
+            }
+            
+            function unhighlight() {
+                dropArea.classList.remove('highlight');
+            }
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                
+                if (files.length > 0) {
+                    fileInput.files = files;
+                    fileName.textContent = `Selected file: ${files[0].name}`;
+                }
+            }
+            
+            // Handle process button click
+            processBtn.addEventListener('click', async function() {
+                if (!fileInput.files.length) {
+                    alert('Please select a file first.');
+                    return;
+                }
+                
+                const file = fileInput.files[0];
+                
+                // Show loading indicator
+                loading.style.display = 'block';
+                resultArea.textContent = 'Processing...';
+                
+                try {
+                    // Create FormData object
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('model', modelSelect.value);
+                    
+                    // Send request to API
+                    const response = await fetch('/api/extract', {
+                        method: 'POST',
+                        body: formData
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    
+                    const data = await response.json();
+                    // Format JSON result
+                    resultArea.textContent = JSON.stringify(data, null, 2);
+                } catch (error) {
+                    resultArea.textContent = `Error: ${error.message}`;
+                } finally {
+                    // Hide loading indicator
+                    loading.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

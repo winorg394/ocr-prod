@@ -1,0 +1,9 @@
+easyocr>=1.7.0
+pillow>=9.0.0
+pymupdf>=1.21.1  # for fitz
+flask>=2.0.0
+werkzeug>=2.0.0
+openai>=1.0.0
+numpy>=1.22.0  # required by easyocr
+torch>=2.0.0   # required by easyocr
+torchvision>=0.15.0  # required by easyocr

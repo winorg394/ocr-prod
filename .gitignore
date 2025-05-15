@@ -22,9 +22,10 @@ build/
 *.swp
 *.swo
 
-#env variable
+# Environment variables
 .env
-*.env
+.env.local
+.env.*.local
 
 # OS generated files
 .DS_Store

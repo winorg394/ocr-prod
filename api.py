@@ -90,5 +90,6 @@ def extract_info():
         # Uncomment the following lines if you want to delete files after processing
         pass  # Added this line to fix the indentation error after finally
 
-""" if __name__ == '__main__':
-    app.run(debug=True, port=8808, host='0.0.0.0') """
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

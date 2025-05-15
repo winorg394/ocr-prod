@@ -8,5 +8,6 @@ services:
     volumes:
       - .:/app
     environment:
-      - FLASK_ENV=development
+      - FLASK_ENV=production
       - FLASK_APP=api.py
+      - PORT=5000

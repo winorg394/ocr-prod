@@ -23,4 +23,4 @@ COPY . .
 # Expose port 5000 for Flask
 EXPOSE 5000
 
-CMD ["python", "app.py"]
+CMD ["python", "api.py"]

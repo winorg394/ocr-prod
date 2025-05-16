@@ -19,6 +19,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Copy the rest of the application
 COPY . .
 
+# Add the current directory to PYTHONPATH
+ENV PYTHONPATH=/app:$PYTHONPATH
+
 # Expose port 5001 for Flask
 EXPOSE 5001
 

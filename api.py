@@ -31,6 +31,16 @@ def index():
     """Render the main page"""
     return render_template('index.html')
 
+@app.route('/env')
+def get_env():
+    """Return environment variables"""
+    env_vars = {
+        'OPENAI_API_KEY': 'Present' if os.getenv('OPENAI_API_KEY') else 'Missing',
+        'OPENAI_BASE_URL': os.getenv('OPENAI_BASE_URL', 'Not set'),
+        'PORT': os.getenv('PORT', '5001')
+    }
+    return jsonify(env_vars)
+
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     """Serve uploaded files"""

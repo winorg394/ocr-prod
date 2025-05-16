@@ -31,7 +31,7 @@ def index():
     """Render the main page"""
     return render_template('index.html')
 
-@app.route('/env')
+@app.route('/envenv')
 def get_env():
     """Return environment variables"""
     env_vars = {
